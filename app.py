@@ -15,16 +15,11 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
-
-.stApp {
-    background: #f6f8fc;
-}
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+.stApp { background: #f6f8fc; }
 
 .block-container {
-    padding-top: 1.2rem;
+    padding-top: 3.2rem;
     padding-left: 1.7rem;
     padding-right: 1.7rem;
     max-width: 1720px;
@@ -34,9 +29,7 @@ section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #071327 0%, #0b1a33 100%);
 }
 
-section[data-testid="stSidebar"] * {
-    color: #f8fafc !important;
-}
+section[data-testid="stSidebar"] * { color: #f8fafc !important; }
 
 .logo-box {
     display:flex;
@@ -58,17 +51,8 @@ section[data-testid="stSidebar"] * {
     color:white;
 }
 
-.logo-title {
-    font-size:22px;
-    font-weight:900;
-    line-height:1;
-}
-
-.logo-sub {
-    font-size:13px;
-    color:#cbd5e1 !important;
-    margin-top:3px;
-}
+.logo-title { font-size:22px; font-weight:900; line-height:1; }
+.logo-sub { font-size:13px; color:#cbd5e1 !important; margin-top:3px; }
 
 .side-card {
     background:rgba(255,255,255,0.07);
@@ -86,17 +70,16 @@ section[data-testid="stSidebar"] * {
 }
 
 .title {
-    font-size:32px;
+    font-size:34px;
     font-weight:900;
     color:#0f172a;
     letter-spacing:-0.6px;
+    line-height:1.2;
+    margin-top:8px;
     margin-bottom:4px;
 }
 
-.subtitle {
-    font-size:15px;
-    color:#475569;
-}
+.subtitle { font-size:15px; color:#475569; }
 
 .top-right {
     text-align:right;
@@ -124,15 +107,8 @@ section[data-testid="stSidebar"] * {
     box-shadow:0 8px 22px rgba(15,23,42,0.055);
 }
 
-.kpi {
-    min-height:112px;
-}
-
-.kpi-inner {
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
+.kpi { min-height:112px; }
+.kpi-inner { display:flex; align-items:center; gap:14px; }
 
 .kpi-icon {
     width:44px;
@@ -151,33 +127,10 @@ section[data-testid="stSidebar"] * {
 .orange-bg { background:#ffedd5; color:#f97316; }
 .red-bg { background:#fee2e2; color:#ef4444; }
 
-.kpi-label {
-    color:#64748b;
-    font-size:12px;
-    font-weight:800;
-    margin-bottom:4px;
-}
-
-.kpi-value {
-    color:#0f172a;
-    font-size:23px;
-    font-weight:900;
-    line-height:1.1;
-}
-
-.kpi-sub-green {
-    color:#16a34a;
-    font-size:12px;
-    font-weight:900;
-    margin-top:5px;
-}
-
-.kpi-sub-red {
-    color:#dc2626;
-    font-size:12px;
-    font-weight:900;
-    margin-top:5px;
-}
+.kpi-label { color:#64748b; font-size:12px; font-weight:800; margin-bottom:4px; }
+.kpi-value { color:#0f172a; font-size:23px; font-weight:900; line-height:1.1; }
+.kpi-sub-green { color:#16a34a; font-size:12px; font-weight:900; margin-top:5px; }
+.kpi-sub-red { color:#dc2626; font-size:12px; font-weight:900; margin-top:5px; }
 
 .panel {
     background:#ffffff;
@@ -188,17 +141,8 @@ section[data-testid="stSidebar"] * {
     margin-bottom:18px;
 }
 
-.panel-title {
-    color:#0f172a;
-    font-size:18px;
-    font-weight:900;
-    margin-bottom:14px;
-}
-
-.panel-sub {
-    color:#64748b;
-    font-size:13px;
-}
+.panel-title { color:#0f172a; font-size:18px; font-weight:900; margin-bottom:14px; }
+.panel-sub { color:#64748b; font-size:13px; }
 
 .progress-ring {
     width:230px;
@@ -230,12 +174,7 @@ section[data-testid="stSidebar"] * {
     box-shadow:0 8px 20px rgba(15,23,42,0.04);
 }
 
-.right-title {
-    color:#0f172a;
-    font-size:16px;
-    font-weight:900;
-    margin-bottom:12px;
-}
+.right-title { color:#0f172a; font-size:16px; font-weight:900; margin-bottom:12px; }
 
 .summary-row {
     display:flex;
@@ -251,30 +190,9 @@ section[data-testid="stSidebar"] * {
 .holdings-header {
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-start;
     gap:12px;
     margin-bottom:12px;
-}
-
-.pill {
-    display:inline-block;
-    border:1px solid #dbe4f0;
-    background:#ffffff;
-    color:#334155;
-    border-radius:10px;
-    padding:10px 12px;
-    font-weight:800;
-    font-size:13px;
-}
-
-.add {
-    display:inline-block;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    color:white;
-    border-radius:10px;
-    padding:10px 15px;
-    font-weight:900;
-    font-size:13px;
 }
 
 .total-row {
@@ -289,32 +207,42 @@ section[data-testid="stSidebar"] * {
     margin-top:10px;
 }
 
+.insight-strip {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:12px;
+    margin:12px 0 14px 0;
+}
+
+.insight {
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:12px 14px;
+}
+
+.insight-label {
+    color:#64748b;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:4px;
+}
+
+.insight-value {
+    color:#0f172a;
+    font-size:18px;
+    font-weight:900;
+}
+
 div[data-testid="stDataFrame"] {
     border-radius:14px;
     overflow:hidden;
     border:1px solid #e2e8f0;
 }
 
-/* Purpose-built iPhone mode */
-.iphone-wrap {
-    max-width: 430px;
-    margin: 0 auto;
-}
-
-.iphone-title {
-    font-size: 28px;
-    font-weight: 900;
-    color: #0f172a;
-    line-height:1.05;
-    margin-bottom:8px;
-}
-
-.iphone-sub {
-    color:#475569;
-    font-size:14px;
-    line-height:1.35;
-    margin-bottom:14px;
-}
+.iphone-wrap { max-width: 430px; margin: 0 auto; }
+.iphone-title { font-size: 28px; font-weight: 900; color: #0f172a; line-height:1.05; margin-bottom:8px; }
+.iphone-sub { color:#475569; font-size:14px; line-height:1.35; margin-bottom:14px; }
 
 .iphone-card {
     background:#ffffff;
@@ -325,11 +253,7 @@ div[data-testid="stDataFrame"] {
     margin-bottom:12px;
 }
 
-.iphone-kpi {
-    display:flex;
-    align-items:center;
-    gap:13px;
-}
+.iphone-kpi { display:flex; align-items:center; gap:13px; }
 
 .iphone-icon {
     width:42px;
@@ -342,46 +266,13 @@ div[data-testid="stDataFrame"] {
     flex-shrink:0;
 }
 
-.iphone-label {
-    color:#64748b;
-    font-size:12px;
-    font-weight:800;
-    margin-bottom:3px;
-}
+.iphone-label { color:#64748b; font-size:12px; font-weight:800; margin-bottom:3px; }
+.iphone-value { color:#0f172a; font-size:25px; font-weight:900; line-height:1.1; }
+.iphone-subtext-green { color:#16a34a; font-size:12px; font-weight:900; margin-top:4px; }
+.iphone-subtext-red { color:#dc2626; font-size:12px; font-weight:900; margin-top:4px; }
 
-.iphone-value {
-    color:#0f172a;
-    font-size:25px;
-    font-weight:900;
-    line-height:1.1;
-}
-
-.iphone-subtext-green {
-    color:#16a34a;
-    font-size:12px;
-    font-weight:900;
-    margin-top:4px;
-}
-
-.iphone-subtext-red {
-    color:#dc2626;
-    font-size:12px;
-    font-weight:900;
-    margin-top:4px;
-}
-
-.iphone-progress {
-    height:10px;
-    background:#e5e7eb;
-    border-radius:999px;
-    margin:12px 0 8px 0;
-}
-
-.iphone-progress-fill {
-    height:10px;
-    background:linear-gradient(90deg,#22c55e,#2563eb);
-    border-radius:999px;
-}
+.iphone-progress { height:10px; background:#e5e7eb; border-radius:999px; margin:12px 0 8px 0; }
+.iphone-progress-fill { height:10px; background:linear-gradient(90deg,#22c55e,#2563eb); border-radius:999px; }
 
 .iphone-holding {
     display:flex;
@@ -391,26 +282,18 @@ div[data-testid="stDataFrame"] {
     border-bottom:1px solid #e2e8f0;
 }
 
-.iphone-holding:last-child {
-    border-bottom:none;
-}
-
-.iphone-symbol {
-    font-weight:900;
-    color:#0f172a;
-}
-
-.iphone-small {
-    color:#64748b;
-    font-size:12px;
-}
+.iphone-holding:last-child { border-bottom:none; }
+.iphone-symbol { font-weight:900; color:#0f172a; }
+.iphone-small { color:#64748b; font-size:12px; }
 
 @media (max-width: 768px) {
     .block-container {
         padding-left:0.7rem;
         padding-right:0.7rem;
-        padding-top:0.8rem;
+        padding-top:1.2rem;
     }
+    .title { font-size:28px; }
+    .insight-strip { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -523,12 +406,9 @@ st.sidebar.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ============================================================
-# iPhone dashboard
-# ============================================================
+# iPhone
 if display_mode == "iPhone Dashboard":
     st.markdown('<div class="iphone-wrap">', unsafe_allow_html=True)
-
     st.markdown(f"""
     <div class="iphone-title">Wealth Builder</div>
     <div class="iphone-sub">Dividend Freedom<br>Journey to {money(target_income)} per year</div>
@@ -566,29 +446,9 @@ if display_mode == "iPhone Dashboard":
         </div>
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="iphone-card">', unsafe_allow_html=True)
-    st.markdown('<div class="right-title">Holdings Snapshot</div>', unsafe_allow_html=True)
-    for _, r in df.sort_values("Market Value", ascending=False).head(8).iterrows():
-        st.markdown(f"""
-        <div class="iphone-holding">
-          <div>
-            <div class="iphone-symbol">{r['Icon']} {r['Symbol']}</div>
-            <div class="iphone-small">{r['Asset Type']} · {r['Sector']}</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="iphone-symbol">{money(r['Market Value'])}</div>
-            <div class="iphone-small">{money(r['Annual Income'])} income</div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# ============================================================
-# Desktop dashboard
-# ============================================================
+# Desktop
 else:
     if page == "Dashboard":
         st.markdown(f"""
@@ -606,18 +466,12 @@ else:
         """, unsafe_allow_html=True)
 
         cols = st.columns(6)
-        with cols[0]:
-            kpi("$", "green-bg", "Portfolio Value", money(portfolio_value), "+1.35% (1D)")
-        with cols[1]:
-            kpi("◔", "purple-bg", "Annual Dividend Income", money(annual_income), "+3.12% (1M)")
-        with cols[2]:
-            kpi("▣", "blue-bg", "Monthly Income", money(monthly_income), "+3.12% (1M)")
-        with cols[3]:
-            kpi("◎", "orange-bg", "Income Goal", f"{money(target_income)} <span style='font-size:14px;'>/ year</span>", f"{progress:.0f}% of goal")
-        with cols[4]:
-            kpi("⌄", "red-bg", "Income Gap", f"{money(income_gap)} <span style='font-size:14px;'>/ year</span>", f"{money(income_gap/12)} / month", red=True)
-        with cols[5]:
-            kpi("↗", "green-bg", "Est. Portfolio Needed", f"${needed/1_000_000:.2f}M", f"at {portfolio_yield:.1f}% yield")
+        with cols[0]: kpi("$", "green-bg", "Portfolio Value", money(portfolio_value), "+1.35% (1D)")
+        with cols[1]: kpi("◔", "purple-bg", "Annual Dividend Income", money(annual_income), "+3.12% (1M)")
+        with cols[2]: kpi("▣", "blue-bg", "Monthly Income", money(monthly_income), "+3.12% (1M)")
+        with cols[3]: kpi("◎", "orange-bg", "Income Goal", f"{money(target_income)} <span style='font-size:14px;'>/ year</span>", f"{progress:.0f}% of goal")
+        with cols[4]: kpi("⌄", "red-bg", "Income Gap", f"{money(income_gap)} <span style='font-size:14px;'>/ year</span>", f"{money(income_gap/12)} / month", red=True)
+        with cols[5]: kpi("↗", "green-bg", "Est. Portfolio Needed", f"${needed/1_000_000:.2f}M", f"at {portfolio_yield:.1f}% yield")
 
         st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
@@ -655,21 +509,46 @@ else:
         lower_left, lower_right = st.columns([3.2, 0.9])
         with lower_left:
             st.markdown('<div class="panel">', unsafe_allow_html=True)
-            st.markdown("""
-            <div class="holdings-header">
-              <div>
-                <div class="panel-title" style="margin-bottom:2px;">Holdings Overview</div>
-                <div class="panel-sub">All your shares and ETFs in one place</div>
-              </div>
-              <div>
-                <span class="pill">All Assets ▾</span>
-                <span class="pill">All Sectors ▾</span>
-                <span class="pill">🔍 Search holdings...</span>
-                <span class="add">+ Add Holding</span>
-              </div>
+
+            asset_options = ["All Assets"] + sorted(df["Asset Type"].dropna().unique().tolist())
+            sector_options = ["All Sectors"] + sorted(df["Sector"].dropna().unique().tolist())
+
+            st.markdown('<div class="holdings-header"><div><div class="panel-title" style="margin-bottom:2px;">Holdings Overview</div><div class="panel-sub">Filter the table to see income, yield and exposure by asset class or sector</div></div></div>', unsafe_allow_html=True)
+
+            f1, f2, f3, f4 = st.columns([1, 1, 1.5, 0.9])
+            selected_asset = f1.selectbox("Asset filter", asset_options, label_visibility="collapsed")
+            selected_sector = f2.selectbox("Sector filter", sector_options, label_visibility="collapsed")
+            search_text = f3.text_input("Search holdings", placeholder="🔍 Search holdings...", label_visibility="collapsed")
+            f4.button("+ Add Holding", use_container_width=True, type="primary")
+
+            filtered_df = df.copy()
+            if selected_asset != "All Assets":
+                filtered_df = filtered_df[filtered_df["Asset Type"] == selected_asset]
+            if selected_sector != "All Sectors":
+                filtered_df = filtered_df[filtered_df["Sector"] == selected_sector]
+            if search_text:
+                mask = (
+                    filtered_df["Symbol"].str.contains(search_text, case=False, na=False)
+                    | filtered_df["Name"].str.contains(search_text, case=False, na=False)
+                    | filtered_df["Sector"].str.contains(search_text, case=False, na=False)
+                )
+                filtered_df = filtered_df[mask]
+
+            filtered_value = filtered_df["Market Value"].sum()
+            filtered_income = filtered_df["Annual Income"].sum()
+            filtered_yield = filtered_income / filtered_value * 100 if filtered_value else 0
+            filtered_franking = filtered_df["Franking Credits"].sum()
+
+            st.markdown(f"""
+            <div class="insight-strip">
+              <div class="insight"><div class="insight-label">Filtered Value</div><div class="insight-value">{money(filtered_value)}</div></div>
+              <div class="insight"><div class="insight-label">Filtered Income</div><div class="insight-value">{money(filtered_income)}</div></div>
+              <div class="insight"><div class="insight-label">Filtered Yield</div><div class="insight-value">{filtered_yield:.2f}%</div></div>
+              <div class="insight"><div class="insight-label">Franking Estimate</div><div class="insight-value">{money(filtered_franking)}</div></div>
             </div>
             """, unsafe_allow_html=True)
-            display = df[["Icon","Symbol","Name","Asset Type","Units","Avg. Price","Current Price","Market Value","Annual Income","Yield on Cost","Current Yield","Status"]].copy()
+
+            display = filtered_df[["Icon","Symbol","Name","Units","Avg. Price","Current Price","Market Value","Annual Income","Yield on Cost","Current Yield"]].copy()
             display["Symbol"] = display["Icon"] + "  " + display["Symbol"]
             display = display.drop(columns=["Icon"])
             display["Avg. Price"] = display["Avg. Price"].map(money2)
@@ -678,11 +557,13 @@ else:
             display["Annual Income"] = display["Annual Income"].map(money)
             display["Yield on Cost"] = display["Yield on Cost"].map(lambda x: f"{x:.2f}%")
             display["Current Yield"] = display["Current Yield"].map(lambda x: f"{x:.2f}%")
+
             st.dataframe(display, use_container_width=True, hide_index=True, height=390)
+
             st.markdown(f"""
             <div class="total-row">
               <div>Total / Weighted Average</div>
-              <div>{int(df['Units'].sum()):,} units &nbsp;&nbsp;&nbsp; {money(portfolio_value)} &nbsp;&nbsp;&nbsp; {money(annual_income)} &nbsp;&nbsp;&nbsp; {portfolio_yield:.2f}%</div>
+              <div>{int(filtered_df['Units'].sum()):,} units &nbsp;&nbsp;&nbsp; {money(filtered_value)} &nbsp;&nbsp;&nbsp; {money(filtered_income)} &nbsp;&nbsp;&nbsp; {filtered_yield:.2f}%</div>
             </div>
             """, unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
