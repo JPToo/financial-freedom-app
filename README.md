@@ -1,9 +1,11 @@
-# Wealth Builder Dashboard V5 Mobile
+# Wealth Builder Dashboard V6
 
-Improved Streamlit dashboard with mobile-responsive CSS.
+This version fixes the duplicate layout problem by adding Display Mode:
 
-Upload these files over the GitHub version:
-- app.py
-- requirements.txt
-- sample_holdings.csv
-- README.md
+- Desktop Dashboard
+- iPhone Dashboard
+
+Use iPhone Dashboard when opening on mobile.
+
+Main file:
+app.py
