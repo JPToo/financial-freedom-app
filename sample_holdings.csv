@@ -5,4 +5,5 @@ WDS.AX,Woodside Energy,Share,Energy,400,28.10,28.97,1.54,100
 WES.AX,Wesfarmers,Share,Industrials,100,56.30,66.42,2.12,100
 VAS.AX,Vanguard Australian Shares ETF,ETF,ETF - Australia,500,88.60,95.21,4.72,75
 VGS.AX,Vanguard International Shares ETF,ETF,ETF - International,300,102.30,111.92,4.94,0
-VHY.AX,Vanguard Australian High Yield ETF,ETF,ETF - Dividend,400,68.20,71.45,4.45,80
+VHY.AX,Vanguard High Yield Australian Shares ETF,ETF,ETF - Dividend,400,68.20,71.45,4.45,80
+CASH,Cash Position,Cash,Cash,1,4734,4734,95,0
