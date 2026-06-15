@@ -1,9 +1,9 @@
-# Wealth Builder Dashboard V10
+# Wealth Builder Dashboard V11
 
-Fix:
-- Removed all custom HTML wrappers around Streamlit charts and tables.
-- This prevents empty white boxes above the charts.
-- Keeps clean KPI cards, filters, and iPhone display mode.
+Updates:
+- aligned the three main dashboard panels
+- progress, income forecast and allocation now use more consistent sizing
+- kept no blank wrapper boxes
 
 Main file:
 app.py

@@ -140,7 +140,8 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
     border-radius:18px;
     padding:22px;
     box-shadow:0 8px 22px rgba(15,23,42,0.05);
-    min-height:360px;
+    height:410px;
+    box-sizing:border-box;
 }
 
 .progress-ring {
@@ -234,6 +235,14 @@ div[data-testid="stDataFrame"] {
     border-radius:14px;
     overflow:hidden;
     border:1px solid #e2e8f0;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius:18px !important;
+    border:1px solid #dbe4f0 !important;
+    box-shadow:0 8px 22px rgba(15,23,42,0.05);
+    background:#ffffff;
+    min-height:410px;
 }
 
 div[data-testid="stVerticalBlock"] > div:has(> div[data-testid="stDataFrame"]) {
@@ -489,18 +498,20 @@ else:
             """, unsafe_allow_html=True)
 
         with mid:
-            st.markdown('<div class="section-title chart-title-spacer">Income Forecast</div>', unsafe_allow_html=True)
-            years = list(range(2025, 2037))
-            rows = []
-            for i, y in enumerate(years):
-                rows.append({"Year": y, "Projected Income": annual_income * (1.135 ** i), "Current Trend": annual_income * (1.085 ** i), "Goal": target_income})
-            st.line_chart(pd.DataFrame(rows).set_index("Year"), height=330)
-            st.markdown("<div class='section-sub'>Assumes average annual investment of $18,000 and current average yield</div>", unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown('<div class="section-title chart-title-spacer">Income Forecast</div>', unsafe_allow_html=True)
+                years = list(range(2025, 2037))
+                rows = []
+                for i, y in enumerate(years):
+                    rows.append({"Year": y, "Projected Income": annual_income * (1.135 ** i), "Current Trend": annual_income * (1.085 ** i), "Goal": target_income})
+                st.line_chart(pd.DataFrame(rows).set_index("Year"), height=300)
+                st.markdown("<div class='section-sub'>Assumes average annual investment of $18,000 and current average yield</div>", unsafe_allow_html=True)
 
         with right:
-            st.markdown('<div class="section-title chart-title-spacer">Portfolio Allocation</div>', unsafe_allow_html=True)
-            st.bar_chart(df.groupby("Sector")["Market Value"].sum().sort_values(ascending=False), height=330)
-            st.markdown("<div class='center green-text'>✓ Well diversified</div><div class='center section-sub'>Good balance across asset classes</div>", unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown('<div class="section-title chart-title-spacer">Portfolio Allocation</div>', unsafe_allow_html=True)
+                st.bar_chart(df.groupby("Sector")["Market Value"].sum().sort_values(ascending=False), height=300)
+                st.markdown("<div class='center green-text'>✓ Well diversified</div><div class='center section-sub'>Good balance across asset classes</div>", unsafe_allow_html=True)
 
         st.markdown("<div style='height:22px;'></div>", unsafe_allow_html=True)
 
