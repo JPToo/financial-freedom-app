@@ -1,9 +1,24 @@
-Ticker,Name,Asset Type,Sector,Units,Average Buy Price,Current Price,Annual Dividend Per Unit,Franking %
-CBA.AX,Commonwealth Bank,Share,Financials,200,88.50,131.48,4.48,100
-BHP.AX,BHP Group,Share,Resources,150,40.20,48.17,2.31,100
-WDS.AX,Woodside Energy,Share,Energy,400,28.10,28.97,1.54,100
-WES.AX,Wesfarmers,Share,Industrials,100,56.30,66.42,2.12,100
-VAS.AX,Vanguard Australian Shares ETF,ETF,ETF - Australia,500,88.60,95.21,4.72,75
-VGS.AX,Vanguard International Shares ETF,ETF,ETF - International,300,102.30,111.92,4.94,0
-VHY.AX,Vanguard High Yield Australian Shares ETF,ETF,ETF - Dividend,400,68.20,71.45,4.45,80
-CASH,Cash Position,Cash,Cash,1,4734,4734,95,0
+Ticker,Name,Asset Type,Sector,Sub Sector,Units,Average Buy Price,Current Price,Annual Dividend Per Unit,Franking %,Payment Frequency,Notes
+CBA.AX,Commonwealth Bank,Share,Financials,Bank,220,92.40,131.48,4.65,100,Quarterly,Large cap bank
+NAB.AX,National Australia Bank,Share,Financials,Bank,520,29.10,37.25,1.72,100,Semi-annual,Large cap bank
+WBC.AX,Westpac Banking Corp,Share,Financials,Bank,610,22.80,28.95,1.50,100,Semi-annual,Large cap bank
+ANZ.AX,ANZ Group,Share,Financials,Bank,430,24.60,30.10,1.66,100,Semi-annual,Large cap bank
+BHP.AX,BHP Group,Share,Resources,Mining,380,38.25,43.60,2.20,100,Semi-annual,Major miner
+RIO.AX,Rio Tinto,Share,Resources,Mining,95,103.00,126.20,5.60,100,Semi-annual,Major miner
+FMG.AX,Fortescue,Share,Resources,Mining,420,18.90,23.40,1.60,100,Semi-annual,Iron ore
+WDS.AX,Woodside Energy,Share,Energy,Energy,650,27.80,28.97,1.54,100,Semi-annual,Energy / LNG
+WES.AX,Wesfarmers,Share,Industrials,Retail / Industrial,160,54.10,67.80,2.06,100,Semi-annual,Quality industrial
+WOW.AX,Woolworths Group,Share,Consumer Staples,Retail,210,34.50,32.15,1.04,100,Semi-annual,Defensive retail
+COL.AX,Coles Group,Share,Consumer Staples,Retail,290,15.60,17.90,0.72,100,Semi-annual,Defensive retail
+TCL.AX,Transurban,Share,Infrastructure,Toll roads,900,13.10,12.80,0.62,0,Semi-annual,Infrastructure income
+CSL.AX,CSL,Share,Healthcare,Healthcare,38,278.00,289.50,4.10,10,Semi-annual,Growth / healthcare
+RMD.AX,ResMed,Share,Healthcare,Healthcare,85,28.40,34.75,0.24,0,Quarterly,Growth / healthcare
+GMG.AX,Goodman Group,Share,Property,Industrial property,260,19.90,33.10,0.30,0,Semi-annual,Property growth
+SCG.AX,Scentre Group,Share,Property,Retail property,1350,2.75,3.40,0.17,0,Semi-annual,Property income
+VAS.AX,Vanguard Australian Shares ETF,ETF,ETF - Australia,Broad market ETF,980,86.30,101.50,4.80,75,Quarterly,Core Australian ETF
+VHY.AX,Vanguard Australian High Yield ETF,ETF,ETF - Dividend,Dividend ETF,720,63.20,70.85,4.70,80,Quarterly,High yield ETF
+VGS.AX,Vanguard International Shares ETF,ETF,ETF - International,Global ETF,620,95.80,128.40,3.15,0,Quarterly,Global diversification
+IVV.AX,iShares S&P 500 ETF,ETF,ETF - International,US ETF,140,42.50,58.90,0.86,0,Quarterly,US market exposure
+A200.AX,Betashares Australia 200 ETF,ETF,ETF - Australia,Broad market ETF,690,112.30,132.60,5.20,75,Quarterly,Low-cost Australian ETF
+HACK.AX,Betashares Global Cybersecurity ETF,ETF,ETF - Thematic,Technology ETF,230,9.40,12.15,0.10,0,Annual,Thematic growth
+CASH,Cash / Offset,Cash,Cash,Cash,1,35000.00,35000.00,1400.00,0,Monthly,Cash buffer

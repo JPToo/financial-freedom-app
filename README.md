@@ -1,19 +1,14 @@
-# Financial Freedom Dashboard
+# Financial Freedom Dashboard V3
 
-Premium Streamlit mockup for a dividend retirement dashboard.
+Richer dummy data and improved prototype dashboard.
 
-## Files
-
+Upload all files to GitHub over the previous version:
 - app.py
 - requirements.txt
 - sample_holdings.csv
+- README.md
 
-## Streamlit setup
-
-Main file path:
-
-```text
+Streamlit main file path:
 app.py
-```
 
 Educational only. Not financial advice.
