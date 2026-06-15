@@ -1,14 +1,15 @@
-# Financial Freedom Dashboard V3
+# Wealth Builder Dashboard V4
 
-Richer dummy data and improved prototype dashboard.
+This version is designed to look much closer to the visual mockup:
+- dark sidebar
+- top KPI cards with icons
+- income progress card
+- forecast card
+- allocation card
+- holdings table
+- right income/sector summary
 
-Upload all files to GitHub over the previous version:
-- app.py
-- requirements.txt
-- sample_holdings.csv
-- README.md
-
-Streamlit main file path:
+Main Streamlit file:
 app.py
 
 Educational only. Not financial advice.
