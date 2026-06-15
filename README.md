@@ -1,12 +1,9 @@
-# Wealth Builder Dashboard V8 Clean
+# Wealth Builder Dashboard V9
 
-Updates:
-- removed blank white placeholder boxes
-- retained one clean KPI row
-- cleaned up dashboard flow
-- working filters
-- removed Asset Type and Status from holdings table
-- added filtered insight strip above holdings table
+Fix:
+- removed the blank white boxes caused by empty HTML wrapper divs
+- keeps clean card styling
+- keeps working filters and cleaner table
 
 Main file:
 app.py

@@ -2,7 +2,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from datetime import datetime
 
 st.set_page_config(
     page_title="Wealth Builder",
@@ -132,17 +131,17 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
 .kpi-sub-green { color:#16a34a; font-size:12px; font-weight:900; margin-top:5px; }
 .kpi-sub-red { color:#dc2626; font-size:12px; font-weight:900; margin-top:5px; }
 
-.panel {
+.section-title { color:#0f172a; font-size:18px; font-weight:900; margin-bottom:8px; margin-top:8px; }
+.section-sub { color:#64748b; font-size:13px; margin-bottom:10px; }
+
+.progress-card {
     background:#ffffff;
     border:1px solid #dbe4f0;
     border-radius:18px;
     padding:22px;
     box-shadow:0 8px 22px rgba(15,23,42,0.05);
-    margin-bottom:18px;
+    min-height:375px;
 }
-
-.panel-title { color:#0f172a; font-size:18px; font-weight:900; margin-bottom:14px; }
-.panel-sub { color:#64748b; font-size:13px; }
 
 .progress-ring {
     width:230px;
@@ -165,7 +164,7 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
 .center { text-align:center; }
 .green-text { color:#16a34a; font-weight:900; }
 
-.right-card {
+.info-card {
     background:#ffffff;
     border:1px solid #dbe4f0;
     border-radius:16px;
@@ -174,7 +173,7 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
     box-shadow:0 8px 20px rgba(15,23,42,0.04);
 }
 
-.right-title { color:#0f172a; font-size:16px; font-weight:900; margin-bottom:12px; }
+.info-title { color:#0f172a; font-size:16px; font-weight:900; margin-bottom:12px; }
 
 .summary-row {
     display:flex;
@@ -186,14 +185,6 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
 }
 
 .summary-value { font-weight:900; }
-
-.holdings-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:12px;
-}
 
 .total-row {
     background:#f8fafc;
@@ -215,10 +206,11 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
 }
 
 .insight {
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
+    background:#ffffff;
+    border:1px solid #dbe4f0;
     border-radius:14px;
     padding:12px 14px;
+    box-shadow:0 8px 18px rgba(15,23,42,0.035);
 }
 
 .insight-label {
@@ -232,6 +224,23 @@ section[data-testid="stSidebar"] * { color: #f8fafc !important; }
     color:#0f172a;
     font-size:18px;
     font-weight:900;
+}
+
+.chart-card {
+    background:#ffffff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 8px 22px rgba(15,23,42,0.05);
+    min-height:375px;
+}
+
+.table-card {
+    background:#ffffff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 8px 22px rgba(15,23,42,0.05);
 }
 
 div[data-testid="stDataFrame"] {
@@ -254,7 +263,6 @@ div[data-testid="stDataFrame"] {
 }
 
 .iphone-kpi { display:flex; align-items:center; gap:13px; }
-
 .iphone-icon {
     width:42px;
     height:42px;
@@ -406,7 +414,7 @@ st.sidebar.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# iPhone
+# iPhone dashboard
 if display_mode == "iPhone Dashboard":
     st.markdown('<div class="iphone-wrap">', unsafe_allow_html=True)
     st.markdown(f"""
@@ -423,14 +431,14 @@ if display_mode == "iPhone Dashboard":
 
     st.markdown(f"""
     <div class="iphone-card">
-      <div class="right-title">Progress to Goal</div>
+      <div class="info-title">Progress to Goal</div>
       <div class="iphone-progress"><div class="iphone-progress-fill" style="width:{progress}%;"></div></div>
       <div class="iphone-small">{money(annual_income)} of {money(target_income)} annual goal</div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="iphone-card">', unsafe_allow_html=True)
-    st.markdown('<div class="right-title">Top Income Contributors</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-title">Top Income Contributors</div>', unsafe_allow_html=True)
     top = df.sort_values("Annual Income", ascending=False).head(5)
     for _, r in top.iterrows():
         st.markdown(f"""
@@ -448,7 +456,7 @@ if display_mode == "iPhone Dashboard":
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Desktop
+# Desktop dashboard
 else:
     if page == "Dashboard":
         st.markdown(f"""
@@ -473,47 +481,49 @@ else:
         with cols[4]: kpi("⌄", "red-bg", "Income Gap", f"{money(income_gap)} <span style='font-size:14px;'>/ year</span>", f"{money(income_gap/12)} / month", red=True)
         with cols[5]: kpi("↗", "green-bg", "Est. Portfolio Needed", f"${needed/1_000_000:.2f}M", f"at {portfolio_yield:.1f}% yield")
 
-        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
         left, mid, right = st.columns([1.1, 1.55, 1.2])
         with left:
-            st.markdown('<div class="panel">', unsafe_allow_html=True)
-            st.markdown('<div class="panel-title">Annual Dividend Income Progress</div>', unsafe_allow_html=True)
+            st.markdown('<div class="progress-card">', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Annual Dividend Income Progress</div>', unsafe_allow_html=True)
             angle = min(progress, 100) * 1.8
             st.markdown(f'<div class="progress-ring" style="--angle:{angle}deg;"></div>', unsafe_allow_html=True)
             st.markdown(f'<div class="progress-number">{progress:.0f}%</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="center panel-sub">{money(annual_income)} of {money(target_income)}<br>annual goal</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="center section-sub">{money(annual_income)} of {money(target_income)}<br>annual goal</div>', unsafe_allow_html=True)
             years_to_goal = income_gap / max(18000 * portfolio_yield / 100, 1)
             st.markdown("<hr style='border:none; border-top:1px solid #e2e8f0; margin:20px 0;'>", unsafe_allow_html=True)
-            st.markdown(f"<div class='center panel-sub'>On track to reach your goal in</div><div class='center green-text' style='font-size:24px;'>{years_to_goal:.1f} years</div><div class='center panel-sub'>with current contributions</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='center section-sub'>On track to reach your goal in</div><div class='center green-text' style='font-size:24px;'>{years_to_goal:.1f} years</div><div class='center section-sub'>with current contributions</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
         with mid:
-            st.markdown('<div class="panel">', unsafe_allow_html=True)
-            st.markdown('<div class="panel-title">Income Forecast</div>', unsafe_allow_html=True)
+            st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Income Forecast</div>', unsafe_allow_html=True)
             years = list(range(2025, 2037))
             rows = []
             for i, y in enumerate(years):
                 rows.append({"Year": y, "Projected Income": annual_income * (1.135 ** i), "Current Trend": annual_income * (1.085 ** i), "Goal": target_income})
             st.line_chart(pd.DataFrame(rows).set_index("Year"))
-            st.markdown("<div class='panel-sub'>Assumes average annual investment of $18,000 and current average yield</div>", unsafe_allow_html=True)
+            st.markdown("<div class='section-sub'>Assumes average annual investment of $18,000 and current average yield</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
         with right:
-            st.markdown('<div class="panel">', unsafe_allow_html=True)
-            st.markdown('<div class="panel-title">Portfolio Allocation</div>', unsafe_allow_html=True)
+            st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Portfolio Allocation</div>', unsafe_allow_html=True)
             st.bar_chart(df.groupby("Sector")["Market Value"].sum().sort_values(ascending=False))
-            st.markdown("<div class='center green-text'>✓ Well diversified</div><div class='center panel-sub'>Good balance across asset classes</div>", unsafe_allow_html=True)
+            st.markdown("<div class='center green-text'>✓ Well diversified</div><div class='center section-sub'>Good balance across asset classes</div>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
         lower_left, lower_right = st.columns([3.2, 0.9])
         with lower_left:
-            st.markdown('<div class="panel">', unsafe_allow_html=True)
+            st.markdown('<div class="table-card">', unsafe_allow_html=True)
 
             asset_options = ["All Assets"] + sorted(df["Asset Type"].dropna().unique().tolist())
             sector_options = ["All Sectors"] + sorted(df["Sector"].dropna().unique().tolist())
 
-            st.markdown('<div class="holdings-header"><div><div class="panel-title" style="margin-bottom:2px;">Holdings Overview</div><div class="panel-sub">Filter the table to see income, yield and exposure by asset class or sector</div></div></div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title" style="margin-bottom:2px;">Holdings Overview</div><div class="section-sub">Filter the table to see income, yield and exposure by asset class or sector</div>', unsafe_allow_html=True)
 
             f1, f2, f3, f4 = st.columns([1, 1, 1.5, 0.9])
             selected_asset = f1.selectbox("Asset filter", asset_options, label_visibility="collapsed")
@@ -569,26 +579,29 @@ else:
             st.markdown('</div>', unsafe_allow_html=True)
 
         with lower_right:
-            st.markdown('<div class="right-card">', unsafe_allow_html=True)
-            st.markdown('<div class="right-title">Income Summary</div>', unsafe_allow_html=True)
             st.markdown(f"""
-            <div class="summary-row"><span>Annual Dividend Income</span><span class="summary-value">{money(annual_income)}</span></div>
-            <div class="summary-row"><span>Monthly Income</span><span class="summary-value">{money(monthly_income)}</span></div>
-            <div class="summary-row"><span>Daily Income</span><span class="summary-value">{money2(daily_income)}</span></div>
-            <div class="summary-row"><span>Franking Credits (est.)</span><span class="summary-value">{money(franking)}</span></div>
+            <div class="info-card">
+              <div class="info-title">Income Summary</div>
+              <div class="summary-row"><span>Annual Dividend Income</span><span class="summary-value">{money(annual_income)}</span></div>
+              <div class="summary-row"><span>Monthly Income</span><span class="summary-value">{money(monthly_income)}</span></div>
+              <div class="summary-row"><span>Daily Income</span><span class="summary-value">{money2(daily_income)}</span></div>
+              <div class="summary-row"><span>Franking Credits (est.)</span><span class="summary-value">{money(franking)}</span></div>
+            </div>
             """, unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
-            st.markdown('<div class="right-card">', unsafe_allow_html=True)
-            st.markdown('<div class="right-title">Top Income Contributors</div>', unsafe_allow_html=True)
+            top_rows = ""
             top = df.sort_values("Annual Income", ascending=False).head(3)
             for _, r in top.iterrows():
                 pct_income = r["Annual Income"] / annual_income * 100 if annual_income else 0
-                st.markdown(f"<div class='summary-row'><span><b>{r['Symbol']}</b></span><span class='summary-value'>{money(r['Annual Income'])} ({pct_income:.1f}%)</span></div>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+                top_rows += f"<div class='summary-row'><span><b>{r['Symbol']}</b></span><span class='summary-value'>{money(r['Annual Income'])} ({pct_income:.1f}%)</span></div>"
+
+            st.markdown(f"""
+            <div class="info-card">
+              <div class="info-title">Top Income Contributors</div>
+              {top_rows}
+            </div>
+            """, unsafe_allow_html=True)
 
     else:
         st.markdown(f"<div class='title'>{page}</div><div class='subtitle'>This page will be expanded in the next build.</div>", unsafe_allow_html=True)
-        st.markdown('<div class="panel">', unsafe_allow_html=True)
         st.dataframe(df, use_container_width=True, hide_index=True)
-        st.markdown('</div>', unsafe_allow_html=True)
