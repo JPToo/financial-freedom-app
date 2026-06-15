@@ -1,15 +1,9 @@
-# Wealth Builder Dashboard V4
+# Wealth Builder Dashboard V5 Mobile
 
-This version is designed to look much closer to the visual mockup:
-- dark sidebar
-- top KPI cards with icons
-- income progress card
-- forecast card
-- allocation card
-- holdings table
-- right income/sector summary
+Improved Streamlit dashboard with mobile-responsive CSS.
 
-Main Streamlit file:
-app.py
-
-Educational only. Not financial advice.
+Upload these files over the GitHub version:
+- app.py
+- requirements.txt
+- sample_holdings.csv
+- README.md
