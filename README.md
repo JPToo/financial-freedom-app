@@ -1,9 +1,9 @@
-# Wealth Builder Dashboard V9
+# Wealth Builder Dashboard V10
 
 Fix:
-- removed the blank white boxes caused by empty HTML wrapper divs
-- keeps clean card styling
-- keeps working filters and cleaner table
+- Removed all custom HTML wrappers around Streamlit charts and tables.
+- This prevents empty white boxes above the charts.
+- Keeps clean KPI cards, filters, and iPhone display mode.
 
 Main file:
 app.py
