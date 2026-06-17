@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from datetime import date
 
-from utils.calculations import build_forecast, first_true_age, first_zero_debt_age, bridge_summary
+from calculations import build_forecast, first_true_age, first_zero_debt_age, bridge_summary
 
 st.set_page_config(
     page_title="Financial Freedom Dashboard V12",
@@ -14,7 +14,7 @@ st.set_page_config(
     layout="wide"
 )
 
-DATA_DIR = Path("data")
+DATA_DIR = Path(".")
 SETTINGS_PATH = DATA_DIR / "settings.json"
 SNAPSHOT_PATH = DATA_DIR / "monthly_snapshots.csv"
 
