@@ -1,9 +1,15 @@
-# Financial Freedom Planner V12.6
+# Financial Freedom Planner V12.8
 
-Changes:
-- Fixed Save Inputs button contrast
-- Explained Actual Growth section
-- Bad debt reduction chart now auto-scales to relevant payoff period
-- 55 target chart starts from current age, not target retirement age
-- Added scenario overlays: base case, +$150k invested, higher monthly investing
-- Added clear gap-at-55 metrics
+Premium single-page dashboard.
+
+Focus:
+- How many more years do we need to work?
+- Are we on track for target retirement age?
+- What is the gap?
+- What levers move the date forward?
+
+Run:
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```

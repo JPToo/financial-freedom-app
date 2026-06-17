@@ -13,7 +13,7 @@
   "super_growth_rate_pct": 6.0,
   "super_drawdown_pct": 4.0,
   "home_loan_balance": 155000,
-  "home_loan_interest_pct": 6.0,
+  "home_loan_interest_pct": 6.25,
   "home_loan_monthly_repayment": 6000,
   "car_loan_balance": 0,
   "car_loan_interest_pct": 8.0,
