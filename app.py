@@ -9,7 +9,7 @@ from datetime import date
 from calculations import build_forecast, first_true_age, first_zero_debt_age, bridge_summary
 
 st.set_page_config(
-    page_title="Financial Freedom Dashboard V12",
+    page_title="Financial Freedom",
     page_icon="💰",
     layout="wide"
 )
@@ -37,7 +37,7 @@ def metric_with_help(label, value, help_text):
 
 settings = load_settings()
 
-st.sidebar.title("Financial Freedom V12")
+st.sidebar.title("Financial Freedom")
 page = st.sidebar.radio(
     "Navigation",
     [
