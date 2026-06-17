@@ -16,5 +16,6 @@
   "investment_loan_balance": 100000,
   "investment_loan_interest_rate": 0.0,
   "investment_loan_monthly_repayment": 1000,
-  "monthly_investment": 3000
+  "monthly_investment": 3000,
+  "cash_balance": 25000
 }
