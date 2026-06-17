@@ -1,19 +1,38 @@
-# Family Wealth Platform - Flat Version V3
+# Financial Freedom Dashboard V12
 
-Simple upload version. Upload these files to GitHub:
+Purpose: answer the question:
 
-- app.py
-- requirements.txt
-- README.md
-- STEP_BY_STEP_GUIDE.md
+**How many more years do we need to work?**
 
-Main file path in Streamlit:
+This dashboard focuses on retirement planning and forecasting financial independence, not portfolio trading.
 
-app.py
+## Features
 
-Updates in V3:
-- Home page cards now have working navigation buttons.
-- Wealth Builder improved toward the Version 11 dashboard.
-- Home Builder forecast focuses on savings over years from today.
-- Future Builder separates car goal from long-term investing.
-- Car goal can be turned off after it is achieved.
+- Financial Freedom Date
+- Years Remaining
+- Retirement Bridge 55–60
+- Investment Portfolio Forecast
+- Superannuation Forecast
+- Dividend Income Forecast
+- Bad Debt Paydown
+- Investment Leverage
+- Manual Monthly Inputs
+- Historical Snapshot Storage
+- Scenario Inputs
+
+## Run locally
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## Data storage
+
+The dashboard stores historical data in:
+
+```text
+data/monthly_snapshots.csv
+```
+
+This is intentionally simple for Version 12.

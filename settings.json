@@ -1,0 +1,20 @@
+{
+  "current_age": 50,
+  "target_retirement_age": 55,
+  "super_access_age": 60,
+  "target_income": 120000,
+  "inflation_rate": 0.03,
+  "portfolio_growth_rate": 0.06,
+  "dividend_yield": 0.05,
+  "super_growth_rate": 0.06,
+  "current_portfolio": 900000,
+  "current_super": 650000,
+  "bad_debt_balance": 300000,
+  "bad_debt_interest_rate": 0.06,
+  "bad_debt_monthly_repayment": 4000,
+  "bad_debt_extra_repayment": 0,
+  "investment_loan_balance": 100000,
+  "investment_loan_interest_rate": 0.0,
+  "investment_loan_monthly_repayment": 1000,
+  "monthly_investment": 3000
+}
