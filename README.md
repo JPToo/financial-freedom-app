@@ -1,12 +1,12 @@
-# Financial Freedom Planner V12.4
+# Financial Freedom Planner V12.5
 
-Fixes:
-- Readable sidebar inputs
-- More tooltips/help text
-- Scenario extra debt repayment now impacts the scenario
-- Super income is included after super access age
-- Movement vs Base Case explained
-- Extra bad debt repayment is snowballed across bad debt categories
+Main changes:
+- Added dummy historical monthly snapshots
+- Simplified the charts
+- Separated pre-super 55-60 dividend income check from post-60 super income
+- Target income is treated as the required annual income from core assumptions
+- Scenario levers now recalculate base case, bad debt payoff, pre-super income gap and post-super retirement readiness
+- Bad debt reduction chart now clearly responds to extra repayments
 
 Run:
 ```bash
