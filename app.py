@@ -27,9 +27,10 @@ DEFAULT_SETTINGS = {
     "super_balance_1": 400000,
     "super_balance_2": 250000,
     "super_growth_rate_pct": 6.0,
-    "home_loan_balance": 300000,
+    "super_drawdown_pct": 4.0,
+    "home_loan_balance": 155000,
     "home_loan_interest_pct": 6.0,
-    "home_loan_monthly_repayment": 4000,
+    "home_loan_monthly_repayment": 6000,
     "car_loan_balance": 0,
     "car_loan_interest_pct": 8.0,
     "car_loan_monthly_repayment": 0,
@@ -40,13 +41,12 @@ DEFAULT_SETTINGS = {
     "personal_loan_interest_pct": 10.0,
     "personal_loan_monthly_repayment": 0,
     "extra_bad_debt_repayment": 0,
-    "investment_loan_balance": 100000,
+    "investment_loan_balance": 500000,
     "investment_loan_interest_pct": 0.0,
-    "investment_loan_monthly_repayment": 1000,
+    "investment_loan_monthly_repayment": 2800,
     "cash_balance": 25000,
 }
 
-# ---------- Styling ----------
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -56,7 +56,7 @@ html, body, [class*="css"] {
 }
 
 .main .block-container {
-    padding-top: 2.0rem;
+    padding-top: 2rem;
     padding-left: 3rem;
     padding-right: 3rem;
     max-width: 1450px;
@@ -66,13 +66,38 @@ html, body, [class*="css"] {
     background: linear-gradient(180deg, #07111f 0%, #0f1f33 100%);
 }
 
-[data-testid="stSidebar"] * {
-    color: #f8fafc;
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] summary {
+    color: #f8fafc !important;
 }
 
-[data-testid="stSidebar"] .stNumberInput label,
-[data-testid="stSidebar"] .stTextArea label {
-    color: #e5e7eb !important;
+/* Critical fix: sidebar input values must be readable */
+[data-testid="stSidebar"] input {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    caret-color: #0f172a !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="input"] {
+    background-color: #ffffff !important;
+}
+
+[data-testid="stSidebar"] div[data-baseweb="input"] * {
+    color: #0f172a !important;
+}
+
+[data-testid="stSidebar"] textarea {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+[data-testid="stSidebar"] button {
+    color: #0f172a !important;
 }
 
 [data-testid="stSidebar"] summary {
@@ -84,11 +109,6 @@ h1 {
     font-weight: 800;
     letter-spacing: -0.04em;
     color: #0f172a;
-}
-
-h2, h3 {
-    color: #0f172a;
-    letter-spacing: -0.03em;
 }
 
 .exec-subtitle {
@@ -153,17 +173,9 @@ h2, h3 {
     margin-top: 6px;
 }
 
-.status-good {
-    color: #16a34a !important;
-}
-
-.status-watch {
-    color: #d97706 !important;
-}
-
-.status-bad {
-    color: #dc2626 !important;
-}
+.status-good { color: #16a34a !important; }
+.status-watch { color: #d97706 !important; }
+.status-bad { color: #dc2626 !important; }
 
 .panel {
     background: #ffffff;
@@ -218,10 +230,6 @@ h2, h3 {
     font-size: 0.85rem;
 }
 
-.small-table {
-    font-size: 0.9rem;
-}
-
 div[data-testid="stMetric"] {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -242,8 +250,6 @@ div[data-testid="stMetricValue"] {
 </style>
 """, unsafe_allow_html=True)
 
-
-# ---------- Helpers ----------
 def load_settings():
     if not SETTINGS_PATH.exists():
         save_settings(DEFAULT_SETTINGS)
@@ -310,11 +316,16 @@ def build_forecast(settings, years=40):
     super_growth = pct_to_rate(settings["super_growth_rate_pct"])
     dividend_yield = pct_to_rate(settings["dividend_yield_pct"])
     inflation_rate = pct_to_rate(settings["inflation_rate_pct"])
+    super_drawdown = pct_to_rate(settings["super_drawdown_pct"])
     combined_super = settings["super_balance_1"] + settings["super_balance_2"]
 
     portfolio_values = future_value_monthly(settings["current_portfolio"], settings["monthly_investment"], portfolio_growth, months)
     super_values = future_value_monthly(combined_super, 0, super_growth, months)
 
+    # Snowball extra bad debt repayment into the highest priority debt first:
+    # credit card -> personal loan -> car loan -> home loan.
+    # For modelling simplicity, the extra repayment is currently applied to home loan after other categories are zero/default.
+    # This makes the scenario slider visibly impact total bad debt.
     home_df = debt_paydown(settings["home_loan_balance"], pct_to_rate(settings["home_loan_interest_pct"]), settings["home_loan_monthly_repayment"], settings["extra_bad_debt_repayment"], months)
     car_df = debt_paydown(settings["car_loan_balance"], pct_to_rate(settings["car_loan_interest_pct"]), settings["car_loan_monthly_repayment"], 0, months)
     credit_df = debt_paydown(settings["credit_card_balance"], pct_to_rate(settings["credit_card_interest_pct"]), settings["credit_card_monthly_repayment"], 0, months)
@@ -337,7 +348,10 @@ def build_forecast(settings, years=40):
         portfolio = portfolio_values[m]
         super_balance = super_values[m]
         dividend_income = portfolio * dividend_yield
+        super_income = super_balance * super_drawdown if age >= settings["super_access_age"] else 0
+        retirement_income = dividend_income + super_income
         target_income = settings["target_income"] * ((1 + inflation_rate) ** (m / 12))
+
         home = home_lookup.get(m, 0)
         car = car_lookup.get(m, 0)
         credit = credit_lookup.get(m, 0)
@@ -345,7 +359,8 @@ def build_forecast(settings, years=40):
         total_bad_debt = home + car + credit + personal
         investment_loan = inv_lookup.get(m, 0)
         investment_loan_payment_annual = settings["investment_loan_monthly_repayment"] * 12 if investment_loan > 0 else 0
-        financial_freedom = total_bad_debt <= 0 and dividend_income >= target_income + investment_loan_payment_annual
+
+        financial_freedom = total_bad_debt <= 0 and retirement_income >= target_income + investment_loan_payment_annual
 
         rows.append({
             "month": m,
@@ -353,6 +368,8 @@ def build_forecast(settings, years=40):
             "portfolio": portfolio,
             "super": super_balance,
             "dividend_income": dividend_income,
+            "super_income": super_income,
+            "retirement_income": retirement_income,
             "target_income": target_income,
             "home_loan": home,
             "car_loan": car,
@@ -414,11 +431,7 @@ def format_growth(value):
     return f"{value:.1f}%"
 
 def card(title, value, note="", status=""):
-    status_class = {
-        "good": "status-good",
-        "watch": "status-watch",
-        "bad": "status-bad",
-    }.get(status, "")
+    status_class = {"good": "status-good", "watch": "status-watch", "bad": "status-bad"}.get(status, "")
     st.markdown(f"""
     <div class="metric-card">
         <div class="eyebrow">{title}</div>
@@ -440,68 +453,65 @@ def style_plot(fig, height=350):
     fig.update_yaxes(gridcolor="#eef2f7", zerolinecolor="#e5e7eb")
     return fig
 
-
-# ---------- Inputs ----------
 settings = load_settings()
 
 st.sidebar.title("Inputs")
 st.sidebar.caption("Manual values. Forecasts and history are calculated automatically.")
 
 with st.sidebar.expander("Core Assumptions", expanded=True):
-    settings["current_age"] = st.number_input("Current Age", value=float(settings["current_age"]), step=0.5)
-    settings["target_retirement_age"] = st.number_input("Target Retirement Age", value=float(settings["target_retirement_age"]), step=0.5)
-    settings["target_income"] = st.number_input("Target Annual Income", value=int(settings["target_income"]), step=5000)
-    settings["inflation_rate_pct"] = st.number_input("Inflation Assumption %", value=float(settings["inflation_rate_pct"]), step=0.1, format="%.1f")
+    settings["current_age"] = st.number_input("Current Age", value=float(settings["current_age"]), step=0.5, help="Your current age. Used as the starting point for all forecasts.")
+    settings["target_retirement_age"] = st.number_input("Target Retirement Age", value=float(settings["target_retirement_age"]), step=0.5, help="The age you would ideally like work to become optional.")
+    settings["target_income"] = st.number_input("Target Annual Income", value=int(settings["target_income"]), step=5000, help="Annual after-work income you want the model to fund.")
+    settings["inflation_rate_pct"] = st.number_input("Inflation Assumption %", value=float(settings["inflation_rate_pct"]), step=0.1, format="%.1f", help="Planning assumption used to increase the target income over time.")
 
 with st.sidebar.expander("Investment Portfolio"):
-    settings["current_portfolio"] = st.number_input("Portfolio Value", value=int(settings["current_portfolio"]), step=10000)
-    settings["monthly_investment"] = st.number_input("Monthly Investment", value=int(settings["monthly_investment"]), step=500)
-    settings["dividend_yield_pct"] = st.number_input("Dividend Yield %", value=float(settings["dividend_yield_pct"]), step=0.1, format="%.1f")
-    settings["portfolio_growth_rate_pct"] = st.number_input("Long-Term Forecast Growth %", value=float(settings["portfolio_growth_rate_pct"]), step=0.1, format="%.1f")
+    settings["current_portfolio"] = st.number_input("Portfolio Value", value=int(settings["current_portfolio"]), step=10000, help="Current value of non-super investments.")
+    settings["monthly_investment"] = st.number_input("Monthly Investment", value=int(settings["monthly_investment"]), step=500, help="Amount added to the investment portfolio each month before retirement.")
+    settings["dividend_yield_pct"] = st.number_input("Dividend Yield %", value=float(settings["dividend_yield_pct"]), step=0.1, format="%.1f", help="Expected annual dividend yield from the portfolio.")
+    settings["portfolio_growth_rate_pct"] = st.number_input("Long-Term Forecast Growth %", value=float(settings["portfolio_growth_rate_pct"]), step=0.1, format="%.1f", help="Long-term capital growth assumption for the investment portfolio.")
 
 with st.sidebar.expander("Superannuation"):
-    settings["super_balance_1"] = st.number_input("Super Balance 1", value=int(settings["super_balance_1"]), step=10000)
-    settings["super_balance_2"] = st.number_input("Super Balance 2", value=int(settings["super_balance_2"]), step=10000)
+    settings["super_balance_1"] = st.number_input("Super Balance 1", value=int(settings["super_balance_1"]), step=10000, help="First superannuation balance.")
+    settings["super_balance_2"] = st.number_input("Super Balance 2", value=int(settings["super_balance_2"]), step=10000, help="Second superannuation balance.")
     st.info(f"Combined Super: {money(settings['super_balance_1'] + settings['super_balance_2'])}")
-    settings["super_growth_rate_pct"] = st.number_input("Long-Term Super Growth %", value=float(settings["super_growth_rate_pct"]), step=0.1, format="%.1f")
+    settings["super_growth_rate_pct"] = st.number_input("Long-Term Super Growth %", value=float(settings["super_growth_rate_pct"]), step=0.1, format="%.1f", help="Growth assumption applied to combined super.")
+    settings["super_drawdown_pct"] = st.number_input("Super Drawdown %", value=float(settings["super_drawdown_pct"]), step=0.1, format="%.1f", help="Annual income assumed from super once super access age is reached.")
 
 with st.sidebar.expander("Bad Debt"):
     st.markdown("**Home Loan**")
-    settings["home_loan_balance"] = st.number_input("Home Loan Balance", value=int(settings["home_loan_balance"]), step=10000)
-    settings["home_loan_interest_pct"] = st.number_input("Home Loan Interest %", value=float(settings["home_loan_interest_pct"]), step=0.1, format="%.1f")
-    settings["home_loan_monthly_repayment"] = st.number_input("Home Loan Monthly Repayment", value=int(settings["home_loan_monthly_repayment"]), step=500)
+    settings["home_loan_balance"] = st.number_input("Home Loan Balance", value=int(settings["home_loan_balance"]), step=10000, help="Remaining home loan balance.")
+    settings["home_loan_interest_pct"] = st.number_input("Home Loan Interest %", value=float(settings["home_loan_interest_pct"]), step=0.1, format="%.1f", help="Home loan interest rate.")
+    settings["home_loan_monthly_repayment"] = st.number_input("Home Loan Monthly Repayment", value=int(settings["home_loan_monthly_repayment"]), step=500, help="Regular monthly home loan repayment.")
 
     st.markdown("**Car Loan**")
-    settings["car_loan_balance"] = st.number_input("Car Loan Balance", value=int(settings["car_loan_balance"]), step=1000)
-    settings["car_loan_interest_pct"] = st.number_input("Car Loan Interest %", value=float(settings["car_loan_interest_pct"]), step=0.1, format="%.1f")
-    settings["car_loan_monthly_repayment"] = st.number_input("Car Loan Monthly Repayment", value=int(settings["car_loan_monthly_repayment"]), step=100)
+    settings["car_loan_balance"] = st.number_input("Car Loan Balance", value=int(settings["car_loan_balance"]), step=1000, help="Remaining car loan balance.")
+    settings["car_loan_interest_pct"] = st.number_input("Car Loan Interest %", value=float(settings["car_loan_interest_pct"]), step=0.1, format="%.1f", help="Car loan interest rate.")
+    settings["car_loan_monthly_repayment"] = st.number_input("Car Loan Monthly Repayment", value=int(settings["car_loan_monthly_repayment"]), step=100, help="Regular monthly car loan repayment.")
 
     st.markdown("**Credit Card**")
-    settings["credit_card_balance"] = st.number_input("Credit Card Balance", value=int(settings["credit_card_balance"]), step=500)
-    settings["credit_card_interest_pct"] = st.number_input("Credit Card Interest %", value=float(settings["credit_card_interest_pct"]), step=0.1, format="%.1f")
-    settings["credit_card_monthly_repayment"] = st.number_input("Credit Card Monthly Repayment", value=int(settings["credit_card_monthly_repayment"]), step=100)
+    settings["credit_card_balance"] = st.number_input("Credit Card Balance", value=int(settings["credit_card_balance"]), step=500, help="Outstanding credit card balance.")
+    settings["credit_card_interest_pct"] = st.number_input("Credit Card Interest %", value=float(settings["credit_card_interest_pct"]), step=0.1, format="%.1f", help="Credit card interest rate.")
+    settings["credit_card_monthly_repayment"] = st.number_input("Credit Card Monthly Repayment", value=int(settings["credit_card_monthly_repayment"]), step=100, help="Monthly repayment against credit card debt.")
 
     st.markdown("**Other Personal Loan**")
-    settings["personal_loan_balance"] = st.number_input("Personal Loan Balance", value=int(settings["personal_loan_balance"]), step=1000)
-    settings["personal_loan_interest_pct"] = st.number_input("Personal Loan Interest %", value=float(settings["personal_loan_interest_pct"]), step=0.1, format="%.1f")
-    settings["personal_loan_monthly_repayment"] = st.number_input("Personal Loan Monthly Repayment", value=int(settings["personal_loan_monthly_repayment"]), step=100)
+    settings["personal_loan_balance"] = st.number_input("Personal Loan Balance", value=int(settings["personal_loan_balance"]), step=1000, help="Other personal debt balance.")
+    settings["personal_loan_interest_pct"] = st.number_input("Personal Loan Interest %", value=float(settings["personal_loan_interest_pct"]), step=0.1, format="%.1f", help="Other personal loan interest rate.")
+    settings["personal_loan_monthly_repayment"] = st.number_input("Personal Loan Monthly Repayment", value=int(settings["personal_loan_monthly_repayment"]), step=100, help="Monthly repayment against other personal debt.")
 
-    settings["extra_bad_debt_repayment"] = st.number_input("Extra Bad Debt Repayment", value=int(settings["extra_bad_debt_repayment"]), step=500)
+    settings["extra_bad_debt_repayment"] = st.number_input("Extra Bad Debt Repayment", value=int(settings["extra_bad_debt_repayment"]), step=500, help="Extra monthly repayment applied to bad debt. Scenario testing uses this to bring the bad debt free date forward.")
 
 with st.sidebar.expander("Investment Loan"):
-    settings["investment_loan_balance"] = st.number_input("Investment Loan Balance", value=int(settings["investment_loan_balance"]), step=10000)
-    settings["investment_loan_interest_pct"] = st.number_input("Investment Loan Interest %", value=float(settings["investment_loan_interest_pct"]), step=0.1, format="%.1f")
-    settings["investment_loan_monthly_repayment"] = st.number_input("Investment Loan Monthly Repayment", value=int(settings["investment_loan_monthly_repayment"]), step=500)
+    settings["investment_loan_balance"] = st.number_input("Investment Loan Balance", value=int(settings["investment_loan_balance"]), step=10000, help="Good debt used for investments. This is kept separate from bad debt.")
+    settings["investment_loan_interest_pct"] = st.number_input("Investment Loan Interest %", value=float(settings["investment_loan_interest_pct"]), step=0.1, format="%.1f", help="Interest rate on investment loan.")
+    settings["investment_loan_monthly_repayment"] = st.number_input("Investment Loan Monthly Repayment", value=int(settings["investment_loan_monthly_repayment"]), step=500, help="Monthly repayment required to service investment debt.")
 
 with st.sidebar.expander("Cash"):
-    settings["cash_balance"] = st.number_input("Cash Balance", value=int(settings.get("cash_balance", 0)), step=1000)
+    settings["cash_balance"] = st.number_input("Cash Balance", value=int(settings.get("cash_balance", 0)), step=1000, help="Cash available outside the investment portfolio and super.")
 
 if st.sidebar.button("Save Inputs", use_container_width=True):
     save_settings(settings)
     st.sidebar.success("Inputs saved")
 
-
-# ---------- Calculations ----------
 forecast = build_forecast(settings)
 annual = forecast[forecast["month"] % 12 == 0].copy()
 freedom_age = first_true_age(forecast, "financial_freedom")
@@ -512,7 +522,9 @@ combined_super = settings["super_balance_1"] + settings["super_balance_2"]
 total_bad_debt = calculate_total_bad_debt(settings)
 total_bad_debt_repayment = calculate_total_bad_debt_repayment(settings)
 current_dividends = settings["current_portfolio"] * pct_to_rate(settings["dividend_yield_pct"])
-freedom_ratio = current_dividends / settings["target_income"] if settings["target_income"] else 0
+current_super_income = 0 if settings["current_age"] < settings["super_access_age"] else combined_super * pct_to_rate(settings["super_drawdown_pct"])
+current_retirement_income = current_dividends + current_super_income
+freedom_ratio = current_retirement_income / settings["target_income"] if settings["target_income"] else 0
 years_remaining = None if freedom_age is None else max(freedom_age - settings["current_age"], 0)
 net_investable_assets = settings["current_portfolio"] + combined_super + settings.get("cash_balance", 0)
 net_position = net_investable_assets - total_bad_debt - settings["investment_loan_balance"]
@@ -521,14 +533,12 @@ history = load_history()
 growth = calculate_history_growth(history)
 
 if freedom_age is None:
-    exec_message = "Based on the current assumptions, Financial Freedom is not reached within the forecast period. The primary constraint is the gap between passive income and the target lifestyle income."
+    exec_message = "Based on the current assumptions, Financial Freedom is not reached within the forecast period. The primary constraint is the gap between retirement income and the target lifestyle income."
 else:
-    exec_message = f"Based on the current assumptions, Financial Freedom is projected at age {freedom_age:.1f}, approximately {years_remaining:.1f} years from today. The key milestones are clearing bad debt at age {age_text(bad_debt_free_age)} and closing the retirement bridge gap of {money(bridge['bridge_gap'])}."
+    exec_message = f"Based on the current assumptions, Financial Freedom is projected at age {freedom_age:.1f}, approximately {years_remaining:.1f} years from today. The model now includes portfolio dividends plus super income from age {settings['super_access_age']:.0f}."
 
-# ---------- Dashboard ----------
 st.title("Financial Freedom Planner")
 st.markdown('<div class="exec-subtitle">A roadmap to making work optional</div>', unsafe_allow_html=True)
-
 st.markdown(f"""
 <div class="executive-summary">
     <div class="label">Executive Summary</div>
@@ -536,14 +546,13 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Hero cards
 c1, c2, c3, c4 = st.columns(4)
 with c1:
     status = "good" if freedom_age is not None and freedom_age <= settings["target_retirement_age"] else "watch"
     card("Financial Freedom", age_text(freedom_age), years_text(years_remaining), status)
 with c2:
     status = "good" if freedom_ratio >= 1 else "watch" if freedom_ratio >= 0.6 else "bad"
-    card("Income Replacement", f"{freedom_ratio:.0%}", f"{money(current_dividends)} annual dividends", status)
+    card("Income Replacement", f"{freedom_ratio:.0%}", f"{money(current_retirement_income)} current retirement income", status)
 with c3:
     status = "good" if bad_debt_free_age is not None and bad_debt_free_age <= settings["target_retirement_age"] else "watch"
     card("Debt Freedom", age_text(bad_debt_free_age), f"{money(total_bad_debt)} bad debt remaining", status)
@@ -552,9 +561,6 @@ with c4:
     bridge_note = "Bridge funded" if bridge["bridge_gap"] <= 0 else "Needs attention"
     card("Retirement Bridge", money(bridge["bridge_gap"]), bridge_note, status)
 
-st.markdown("")
-
-# Current position
 p1, p2, p3, p4 = st.columns(4)
 with p1:
     st.metric("Investable Assets", money(net_investable_assets), help="Portfolio + combined super + cash.")
@@ -567,12 +573,10 @@ with p4:
 
 st.divider()
 
-# Main charts
 left, centre, right = st.columns([1.05, 1.45, 1.45])
 
 with left:
     st.markdown('<div class="panel"><div class="panel-title">Freedom Roadmap</div><div class="panel-subtitle">Major milestones from today to work optional.</div>', unsafe_allow_html=True)
-
     roadmap = [
         ("Today", f"Age {settings['current_age']:.1f}", True),
         ("Bad Debt Cleared", f"Age {age_text(bad_debt_free_age)}", bad_debt_free_age is not None),
@@ -580,8 +584,7 @@ with left:
         ("Bridge Ready", "Funded" if bridge["bridge_gap"] <= 0 else f"Gap {money(bridge['bridge_gap'])}", bridge["bridge_gap"] <= 0),
         ("Financial Freedom", f"Age {age_text(freedom_age)}", freedom_age is not None),
     ]
-
-    for i, (title, note, done) in enumerate(roadmap, start=1):
+    for title, note, done in roadmap:
         icon = "✓" if done else "!"
         st.markdown(f"""
         <div class="roadmap-item">
@@ -598,7 +601,6 @@ with left:
         <div class="panel-title">Actual Growth</div>
         <div class="panel-subtitle">Calculated from monthly snapshots.</div>
     """, unsafe_allow_html=True)
-
     st.write(f"Portfolio monthly: **{format_growth(growth['portfolio_monthly'])}**")
     st.write(f"Portfolio 3-month: **{format_growth(growth['portfolio_3m'])}**")
     st.write(f"Portfolio 12-month: **{format_growth(growth['portfolio_12m'])}**")
@@ -608,59 +610,33 @@ with left:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with centre:
-    st.markdown('<div class="panel"><div class="panel-title">Income Forecast</div><div class="panel-subtitle">Dividend income compared with target lifestyle income.</div>', unsafe_allow_html=True)
-
+    st.markdown('<div class="panel"><div class="panel-title">Income Forecast</div><div class="panel-subtitle">Retirement income compared with target lifestyle income. Super income starts at super access age.</div>', unsafe_allow_html=True)
     fig_income = go.Figure()
-    fig_income.add_trace(go.Scatter(
-        x=annual["age"], y=annual["target_income"],
-        mode="lines",
-        name="Target income",
-        line=dict(color="#94a3b8", width=3, dash="dash")
-    ))
-    fig_income.add_trace(go.Scatter(
-        x=annual["age"], y=annual["dividend_income"],
-        mode="lines",
-        name="Dividend income",
-        line=dict(color="#0f3b68", width=4)
-    ))
-
+    fig_income.add_trace(go.Scatter(x=annual["age"], y=annual["target_income"], mode="lines", name="Target income", line=dict(color="#94a3b8", width=3, dash="dash")))
+    fig_income.add_trace(go.Scatter(x=annual["age"], y=annual["dividend_income"], mode="lines", name="Dividend income", line=dict(color="#0f3b68", width=3)))
+    fig_income.add_trace(go.Scatter(x=annual["age"], y=annual["retirement_income"], mode="lines", name="Dividends + super", line=dict(color="#16a34a", width=4)))
     if freedom_age is not None:
         point = annual.iloc[(annual["age"] - freedom_age).abs().argsort()[:1]]
-        fig_income.add_trace(go.Scatter(
-            x=point["age"], y=point["dividend_income"],
-            mode="markers+text",
-            name="Freedom point",
-            marker=dict(size=12, color="#d97706"),
-            text=["Freedom"],
-            textposition="top center"
-        ))
-
+        fig_income.add_trace(go.Scatter(x=point["age"], y=point["retirement_income"], mode="markers+text", name="Freedom point", marker=dict(size=12, color="#d97706"), text=["Freedom"], textposition="top center"))
     st.plotly_chart(style_plot(fig_income, height=400), use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right:
     st.markdown('<div class="panel"><div class="panel-title">Balance Sheet Forecast</div><div class="panel-subtitle">Assets grow while bad debt and investment debt reduce.</div>', unsafe_allow_html=True)
-
     fig_balance = go.Figure()
     fig_balance.add_trace(go.Scatter(x=annual["age"], y=annual["portfolio"], mode="lines", name="Portfolio", line=dict(color="#0f3b68", width=4)))
     fig_balance.add_trace(go.Scatter(x=annual["age"], y=annual["super"], mode="lines", name="Super", line=dict(color="#2563eb", width=3)))
     fig_balance.add_trace(go.Scatter(x=annual["age"], y=annual["bad_debt"], mode="lines", name="Bad debt", line=dict(color="#dc2626", width=3)))
     fig_balance.add_trace(go.Scatter(x=annual["age"], y=annual["investment_loan"], mode="lines", name="Investment loan", line=dict(color="#d97706", width=3, dash="dot")))
-
     st.plotly_chart(style_plot(fig_balance, height=400), use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Detail panels
 a, b, c = st.columns(3)
-
 with a:
     st.markdown('<div class="panel"><div class="panel-title">Bad Debt Breakdown</div><div class="panel-subtitle">Debt that delays financial freedom.</div>', unsafe_allow_html=True)
-    debt_now = pd.DataFrame({
-        "Debt": ["Home Loan", "Car Loan", "Credit Card", "Personal Loan"],
-        "Balance": [settings["home_loan_balance"], settings["car_loan_balance"], settings["credit_card_balance"], settings["personal_loan_balance"]],
-    })
-    st.metric("Total Bad Debt", money(total_bad_debt))
-    st.metric("Monthly Servicing", money(total_bad_debt_repayment))
+    debt_now = pd.DataFrame({"Debt": ["Home Loan", "Car Loan", "Credit Card", "Personal Loan"], "Balance": [settings["home_loan_balance"], settings["car_loan_balance"], settings["credit_card_balance"], settings["personal_loan_balance"]]})
+    st.metric("Total Bad Debt", money(total_bad_debt), help="All bad debt balances added together.")
+    st.metric("Monthly Servicing", money(total_bad_debt_repayment), help="Total monthly repayments across all bad debt plus extra bad debt repayment.")
     debt_bar = px.bar(debt_now, x="Debt", y="Balance")
     debt_bar.update_traces(marker_color="#0f3b68")
     st.plotly_chart(style_plot(debt_bar, height=270), use_container_width=True)
@@ -668,15 +644,10 @@ with a:
 
 with b:
     st.markdown('<div class="panel"><div class="panel-title">Retirement Bridge</div><div class="panel-subtitle">Funding the period before super access.</div>', unsafe_allow_html=True)
-    st.metric("Bridge Required", money(bridge["bridge_required"]))
-    st.metric("Bridge Income", money(bridge["bridge_income"]))
-    st.metric("Bridge Gap", money(bridge["bridge_gap"]))
-
-    bridge_df = forecast[
-        (forecast["age"] >= settings["target_retirement_age"])
-        & (forecast["age"] <= settings["super_access_age"])
-        & (forecast["month"] % 12 == 0)
-    ]
+    st.metric("Bridge Required", money(bridge["bridge_required"]), help="Total inflated target income required between target retirement age and super access age.")
+    st.metric("Bridge Income", money(bridge["bridge_income"]), help="Projected dividend income during the bridge period before super access.")
+    st.metric("Bridge Gap", money(bridge["bridge_gap"]), help="Bridge Required minus Bridge Income. This is the gap to fund before super starts.")
+    bridge_df = forecast[(forecast["age"] >= settings["target_retirement_age"]) & (forecast["age"] <= settings["super_access_age"]) & (forecast["month"] % 12 == 0)]
     bridge_fig = go.Figure()
     bridge_fig.add_trace(go.Bar(x=bridge_df["age"], y=bridge_df["target_income"], name="Required", marker_color="#cbd5e1"))
     bridge_fig.add_trace(go.Bar(x=bridge_df["age"], y=bridge_df["dividend_income"], name="Dividends", marker_color="#0f3b68"))
@@ -686,8 +657,8 @@ with b:
 
 with c:
     st.markdown('<div class="panel"><div class="panel-title">Investment Leverage</div><div class="panel-subtitle">Good debt tracked separately from bad debt.</div>', unsafe_allow_html=True)
-    st.metric("Investment Loan", money(settings["investment_loan_balance"]))
-    st.metric("Annual Loan Repayment", money(settings["investment_loan_monthly_repayment"] * 12))
+    st.metric("Investment Loan", money(settings["investment_loan_balance"]), help="Investment loan balance. This is not included in bad debt.")
+    st.metric("Annual Loan Repayment", money(settings["investment_loan_monthly_repayment"] * 12), help="Monthly investment loan repayment multiplied by 12.")
     leverage_fig = go.Figure()
     leverage_fig.add_trace(go.Scatter(x=annual["age"], y=annual["portfolio"], mode="lines", name="Portfolio", line=dict(color="#0f3b68", width=4)))
     leverage_fig.add_trace(go.Scatter(x=annual["age"], y=annual["investment_loan"], mode="lines", name="Investment loan", line=dict(color="#d97706", width=3)))
@@ -696,19 +667,18 @@ with c:
 
 st.divider()
 
-# Scenario Test
 st.subheader("Scenario Test")
 st.caption("Change the levers below to test how the Financial Freedom age moves. These do not change the saved inputs.")
 
 s1, s2, s3, s4 = st.columns(4)
 with s1:
-    scenario_income = st.slider("Target income", 80000, 180000, int(settings["target_income"]), 5000)
+    scenario_income = st.slider("Target income", 80000, 180000, int(settings["target_income"]), 5000, help="Scenario target annual income.")
 with s2:
-    scenario_monthly_investment = st.slider("Monthly investment", 0, 10000, int(settings["monthly_investment"]), 500)
+    scenario_monthly_investment = st.slider("Monthly investment", 0, 10000, int(settings["monthly_investment"]), 500, help="Scenario monthly contribution to investment portfolio.")
 with s3:
-    scenario_extra_debt = st.slider("Extra bad debt repayment", 0, 10000, int(settings["extra_bad_debt_repayment"]), 500)
+    scenario_extra_debt = st.slider("Extra bad debt repayment", 0, 10000, int(settings["extra_bad_debt_repayment"]), 500, help="Scenario extra monthly repayment against bad debt. This should bring forward the bad debt free date.")
 with s4:
-    scenario_growth_pct = st.slider("Portfolio growth %", 0.0, 12.0, float(settings["portfolio_growth_rate_pct"]), 0.1)
+    scenario_growth_pct = st.slider("Portfolio growth %", 0.0, 12.0, float(settings["portfolio_growth_rate_pct"]), 0.1, help="Scenario long-term portfolio capital growth assumption.")
 
 scenario_settings = settings.copy()
 scenario_settings["target_income"] = scenario_income
@@ -722,41 +692,35 @@ scenario_years = None if scenario_age is None else scenario_age - settings["curr
 
 m1, m2, m3 = st.columns(3)
 with m1:
-    st.metric("Scenario Freedom Age", age_text(scenario_age))
+    st.metric("Scenario Freedom Age", age_text(scenario_age), help="Projected financial freedom age using the scenario sliders.")
 with m2:
-    st.metric("Scenario Years Remaining", years_text(scenario_years))
+    st.metric("Scenario Years Remaining", years_text(scenario_years), help="How many years from current age to scenario financial freedom age.")
 with m3:
-    delta = "" if freedom_age is None or scenario_age is None else f"{scenario_age - freedom_age:+.1f} years"
-    st.metric("Movement vs Base Case", delta if delta else "—")
+    if freedom_age is None or scenario_age is None:
+        movement_label = "—"
+    else:
+        movement = scenario_age - freedom_age
+        movement_label = f"{movement:+.1f} years"
+    st.metric("Movement vs Base Case", movement_label, help="Difference between the scenario financial freedom age and the base case financial freedom age. Negative is better because freedom is achieved earlier.")
 
 st.divider()
 
-# Monthly snapshot
 st.subheader("Monthly Snapshot & History")
 st.caption("Save current values once per month to build actual performance history and rolling growth.")
 
 snap_left, snap_right = st.columns([1, 2])
-
 with snap_left:
     month = st.date_input("Snapshot Month", value=date.today()).strftime("%Y-%m")
     snapshot_notes = st.text_area("Notes", height=80)
-
     if st.button("Save Current Month Snapshot", use_container_width=True):
-        expected_columns = [
-            "month", "portfolio_value", "super_balance_1", "super_balance_2", "combined_super",
-            "home_loan_balance", "car_loan_balance", "credit_card_balance", "personal_loan_balance",
-            "total_bad_debt", "investment_loan_balance", "cash_balance", "annual_dividend_income", "notes",
-        ]
-
+        expected_columns = ["month", "portfolio_value", "super_balance_1", "super_balance_2", "combined_super", "home_loan_balance", "car_loan_balance", "credit_card_balance", "personal_loan_balance", "total_bad_debt", "investment_loan_balance", "cash_balance", "annual_dividend_income", "notes"]
         if SNAPSHOT_PATH.exists():
             snapshot_history = pd.read_csv(SNAPSHOT_PATH)
         else:
             snapshot_history = pd.DataFrame(columns=expected_columns)
-
         for col in expected_columns:
             if col not in snapshot_history.columns:
                 snapshot_history[col] = None
-
         new_row = {
             "month": month,
             "portfolio_value": settings["current_portfolio"],
@@ -773,7 +737,6 @@ with snap_left:
             "annual_dividend_income": current_dividends,
             "notes": snapshot_notes,
         }
-
         snapshot_history = snapshot_history[snapshot_history["month"] != month]
         snapshot_history = pd.concat([snapshot_history, pd.DataFrame([new_row])], ignore_index=True)
         snapshot_history = snapshot_history[expected_columns]
@@ -785,16 +748,10 @@ with snap_right:
     if not snapshot_history.empty:
         snapshot_history = snapshot_history.sort_values("month")
         hist_fig = go.Figure()
-        for col, name, color in [
-            ("portfolio_value", "Portfolio", "#0f3b68"),
-            ("combined_super", "Combined super", "#2563eb"),
-            ("total_bad_debt", "Bad debt", "#dc2626"),
-            ("investment_loan_balance", "Investment loan", "#d97706"),
-        ]:
+        for col, name, color in [("portfolio_value", "Portfolio", "#0f3b68"), ("combined_super", "Combined super", "#2563eb"), ("total_bad_debt", "Bad debt", "#dc2626"), ("investment_loan_balance", "Investment loan", "#d97706")]:
             if col in snapshot_history.columns:
                 hist_fig.add_trace(go.Scatter(x=snapshot_history["month"], y=snapshot_history[col], mode="lines+markers", name=name, line=dict(color=color, width=3)))
         st.plotly_chart(style_plot(hist_fig, height=330), use_container_width=True)
-
         with st.expander("View snapshot table"):
             st.dataframe(snapshot_history, use_container_width=True)
     else:

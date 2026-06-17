@@ -11,9 +11,10 @@
   "super_balance_1": 400000,
   "super_balance_2": 250000,
   "super_growth_rate_pct": 6.0,
-  "home_loan_balance": 300000,
+  "super_drawdown_pct": 4.0,
+  "home_loan_balance": 155000,
   "home_loan_interest_pct": 6.0,
-  "home_loan_monthly_repayment": 4000,
+  "home_loan_monthly_repayment": 6000,
   "car_loan_balance": 0,
   "car_loan_interest_pct": 8.0,
   "car_loan_monthly_repayment": 0,
@@ -24,8 +25,8 @@
   "personal_loan_interest_pct": 10.0,
   "personal_loan_monthly_repayment": 0,
   "extra_bad_debt_repayment": 0,
-  "investment_loan_balance": 100000,
+  "investment_loan_balance": 500000,
   "investment_loan_interest_pct": 0.0,
-  "investment_loan_monthly_repayment": 1000,
+  "investment_loan_monthly_repayment": 2800,
   "cash_balance": 25000
 }
