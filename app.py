@@ -61,7 +61,7 @@ bad_debt_free_age = first_zero_debt_age(forecast)
 bridge = bridge_summary(forecast, settings)
 
 if page == "🏠 Freedom Summary":
-    st.title("Financial Freedom Dashboard V12")
+    st.title("Financial Freedom Dashboard")
     st.caption("Answering the question: How many more years do we need to work?")
 
     years_remaining = None if freedom_age is None else max(freedom_age - settings["current_age"], 0)
@@ -145,7 +145,7 @@ elif page == "📅 Freedom Date":
     st.metric("Financial Freedom Age", "Not reached" if freedom_age is None else f"{freedom_age:.1f}")
 
 elif page == "🌉 Retirement Bridge":
-    st.title("Retirement Bridge: 55 to 60")
+    st.title("Retirement Bridge")
     st.write("This checks whether the investment portfolio can support the years before super becomes available.")
 
     c1, c2, c3 = st.columns(3)
